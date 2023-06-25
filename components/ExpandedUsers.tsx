@@ -7,7 +7,7 @@ interface IPropsDataType {
   field: string;
 }
 
-const ExpandedUsers: FC<IPropsDataType> = (props) => {
+const ExpandedUsers: FC<any> = (props: any) => {
   return (
     <div className="flex flex-row flex-wrap gap-10">
       <Card className="w-full h-32 shadow-sm">
