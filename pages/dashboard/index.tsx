@@ -21,6 +21,8 @@ import {
 import { Icon } from "@iconify/react";
 import SkeletonTable from "../../components/SkeletonTable";
 import { createUser, deleteUser, getAllUsers } from "../api";
+import { useRouter } from "next/router";
+import localforage from "localforage";
 
 const { confirm } = Modal;
 
@@ -42,6 +44,9 @@ const Dashboard: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allUsers, setAllUsers] = useState<DataType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>({})
+
+  const router = useRouter();
 
   const columns: ColumnsType<DataType> = [
     {
@@ -156,12 +161,31 @@ const Dashboard: FC = () => {
 
   useEffect(() => {
     if (loading) {
+      localforage
+      .getItem("roles")
+      .then((res: any) => {
+        if (!res) {
+          localforage.clear();
+          router.push("/");
+        } else {
+          const userLogged: any = res
+          setUser(userLogged)
+          setLoading(false);
+        }
+      })
+      .catch((err: any) => {
+        localforage.clear();
+        router.push("/");
+      });
       getAllUsers().then((res) => {
         setAllUsers(res);
         setLoading(false);
       });
     }
   }, [loading]);
+
+  console.log("User info", user);
+
 
   const onChange: TableProps<DataType>["onChange"] = (
     pagination,

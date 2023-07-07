@@ -72,3 +72,16 @@ export const deleteUser = async (id: string) => {
     });
   }
 };
+export const loginUser = async (payload: any) => {
+  try {
+    const response = await axios.post(`${baseURL}/api/v1/auth/login`, payload);
+    if (response.data) {
+      return response.data;
+    }
+  } catch (error: any) {
+    notification.error({
+      message: "Failed",
+      description: `${error.response.data.error}`,
+    });
+  }
+};
