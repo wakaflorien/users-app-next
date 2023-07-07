@@ -1,12 +1,32 @@
 import Head from "next/head";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, notification } from "antd";
 import PageLayout from "../components/layout";
-import { FC } from "react";
+import { FC, useState } from "react";
 import Link from "next/link";
+import { loginUser } from "./api";
+import { useRouter } from "next/router";
+import * as localforage from "localforage";
 
 const Home: FC = () => {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const onFinish = (values: any) => {
     console.log("Success:", values);
+    setLoading(true);
+    setLoading(true);
+    loginUser(values).then((res) => {
+      if (res) {
+        notification.success({
+          message: "Success",
+          description: `Login ${values.email} successful`,
+        });
+        setLoading(false);
+        localforage.setItem("AUTH_TOKEN", res.data.accessToken);
+        router.push("/dashboard");
+      }
+    }).catch((err) => {
+      setLoading(false);
+    })
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -31,8 +51,8 @@ const Home: FC = () => {
             layout="vertical"
           >
             <Form.Item
-              label="Username"
-              name="username"
+              label="Email"
+              name="email"
               rules={[
                 { required: true, message: "Please input your username!" },
               ]}
@@ -55,6 +75,7 @@ const Home: FC = () => {
                 type="primary"
                 htmlType="submit"
                 className="h-10 w-32 bg-gradient-to-r from-purple-500 to-pink-500"
+                loading={loading}
               >
                 Login
               </Button>
