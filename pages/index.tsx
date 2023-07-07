@@ -11,7 +11,6 @@ const Home: FC = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const onFinish = (values: any) => {
-    console.log("Success:", values);
     setLoading(true);
     setLoading(true);
     loginUser(values).then((res) => {
